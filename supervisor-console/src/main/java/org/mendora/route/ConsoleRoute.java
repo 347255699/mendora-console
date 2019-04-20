@@ -1,5 +1,7 @@
 package org.mendora.route;
 
+import io.reactivex.Maybe;
+import io.reactivex.Single;
 import io.vertx.core.http.HttpMethod;
 import io.vertx.reactivex.core.http.HttpServerRequest;
 import io.vertx.reactivex.core.http.HttpServerResponse;
@@ -12,7 +14,6 @@ import org.mendora.facade.Route;
 import org.mendora.facade.RouteFactory;
 
 import java.io.File;
-import java.io.IOException;
 import java.util.Set;
 
 @Route("/console")
@@ -20,7 +21,7 @@ import java.util.Set;
 public class ConsoleRoute implements RouteFactory {
     private String uploadDir = System.getProperty("uploadDir");
 
-    public enum RespErrCode implements RespCode{
+    public enum RespErrCode implements RespCode {
         ERR_FILE_NOT_FOUND(20001, "The upload file not found."),
         ;
 
@@ -47,32 +48,26 @@ public class ConsoleRoute implements RouteFactory {
         HttpServerResponse response = rtx.response();
         String fileDir = request.getFormAttribute("fileDir");
         Set<FileUpload> fileUploads = rtx.fileUploads();
-        if (fileUploads.size() == 1) {
-            FileUpload fileUpload = fileUploads.iterator().next();
-            String tempFileName = fileUpload.uploadedFileName();
-            String fileName = fileUpload.fileName();
-            succ(response, reName(tempFileName, fileDir + "/" + fileName));
-        } else {
-            fail(response, RespErrCode.ERR_FILE_NOT_FOUND);
-        }
+        Single.just(fileUploads)
+                .filter(set -> set.size() == 1)
+                .map(set -> set.iterator().next())
+                .map(file -> {
+                    String tempFileName = file.uploadedFileName();
+                    String fileName = file.fileName();
+                    return reName(tempFileName, fileDir + "/" + fileName).blockingGet();
+                })
+                .subscribe(result -> succ(response, result))
+                .dispose();
     }
 
-    private boolean reName(String originPath, String destPath) {
+    private Maybe<Boolean> reName(String originPath, String destPath) {
         File origin = new File(originPath);
         String destDirName = destPath.substring(0, destPath.lastIndexOf("/") + 1);
-        File destDirFile = new File(destDirName);
-        if (destDirFile.exists() || destDirFile.mkdirs()) {
-            File dest = new File(destPath);
-            try {
-                if (dest.exists() || dest.createNewFile()) {
-                    return origin.renameTo(dest);
-                } else {
-                    return false;
-                }
-            } catch (IOException e) {
-                log.error(e.getMessage());
-            }
-        }
-        return false;
+        return Single.just(new File(destDirName))
+                .filter(dirFile -> dirFile.exists() || dirFile.mkdirs())
+                .map(dirFile -> destPath)
+                .map(File::new)
+                .filter(destFile -> destFile.exists() || destFile.createNewFile())
+                .map(origin::renameTo);
     }
 }

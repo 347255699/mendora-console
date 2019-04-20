@@ -10,9 +10,11 @@
     <modelVersion>4.0.0</modelVersion>
 
     <artifactId>supervisor-console</artifactId>
+
     <properties>
         <mendora.version>1.0-SNAPSHOT</mendora.version>
     </properties>
+
     <dependencies>
         <dependency>
             <groupId>org.mendora</groupId>
@@ -20,4 +22,17 @@
             <version>${mendora.version}</version>
         </dependency>
     </dependencies>
+
+    <build>
+        <plugins>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-compiler-plugin</artifactId>
+                <configuration>
+                    <source>8</source>
+                    <target>8</target>
+                </configuration>
+            </plugin>
+        </plugins>
+    </build>
 </project>
