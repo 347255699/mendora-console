@@ -56,7 +56,7 @@ public class ConsoleRoute implements RouteFactory {
                     String fileName = file.fileName();
                     return reName(tempFileName, fileDir + "/" + fileName).blockingGet();
                 })
-                .subscribe(result -> succ(response, result))
+                .subscribe(result -> succ(response, result), err -> log.error(err.getMessage(), err))
                 .dispose();
     }
 
