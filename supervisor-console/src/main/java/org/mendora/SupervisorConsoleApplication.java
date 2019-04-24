@@ -13,7 +13,6 @@ import org.apache.logging.log4j.Level;
 public class SupervisorConsoleApplication {
 	public static void main(String[] args) {
 		LoggerModule.builder()
-			.logFileName("/Users/pundix043/workbench/mendora-console/supervisor-console/logs/supervisor-console.log")
 			.logLevel(Level.DEBUG)
 			.build()
 			.run();
@@ -22,8 +21,10 @@ public class SupervisorConsoleApplication {
 			.setFileSystemOptions(new FileSystemOptions().setFileCachingEnabled(false))
 			.setWorkerPoolSize(10);
 		Vertx vertx = Vertx.vertx(vertxOptions);
-		System.setProperty("uploadDir", "/Users/pundix043/workbench/mendora-console/supervisor-console/file-uploads");
+		System.setProperty("uploadDir", "/webserver/other/file-uploads");
 		WebModule.builder()
+			.webRoot("/webserver/other/")
+			.port(83)
 			.build()
 			.run(vertx, "org.mendora.route");
 	}

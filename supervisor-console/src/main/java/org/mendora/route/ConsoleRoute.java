@@ -47,7 +47,7 @@ public class ConsoleRoute implements RouteFactory {
 		}
 	}
 
-	@RequestRouting(value = "/jar", method = HttpMethod.POST, blocked = true)
+	@RequestRouting(value = "/file", method = HttpMethod.POST, blocked = true)
 	public void uploadJar(RoutingContext rtx) {
 		HttpServerRequest request = rtx.request();
 		HttpServerResponse response = rtx.response();
