@@ -55,15 +55,12 @@ public class ConsoleRoute implements RouteFactory {
 		Set<FileUpload> fileUploads = rtx.fileUploads();
 		if (fileUploads.size() == 0) {
 			fail(response, RespErrorCode.ERR_FILE_NOT_FOUND);
+			return;
 		}
 		Single.just(fileUploads)
 			.filter(set -> set.size() == 1)
 			.map(set -> set.iterator().next())
-			.map(file -> {
-				String tempFileName = file.uploadedFileName();
-				String fileName = file.fileName();
-				return reName(tempFileName, fileDir + "/" + fileName).blockingGet();
-			})
+			.map(file -> reName(file.uploadedFileName(), fileDir + "/" + file.fileName()))
 			.subscribe(result -> succ(response, result), err -> log.error(err.getMessage(), err))
 			.dispose();
 	}
