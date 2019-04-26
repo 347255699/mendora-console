@@ -73,6 +73,7 @@ public class ConsoleRoute implements RouteFactory {
 		Set<FileUpload> fileUploads = rtx.fileUploads();
 		if (fileUploads.size() == 0) {
 			fail(response, RespErrorCode.ERR_FILE_NOT_FOUND);
+			return;
 		}
 		Single.just(fileUploads)
 			.filter(set -> set.size() == 1)
