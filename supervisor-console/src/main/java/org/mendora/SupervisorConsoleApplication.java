@@ -15,10 +15,11 @@ public class SupervisorConsoleApplication extends VertxApplicationInit{
 			.build()
 			.run();
 		Vertx vertx = vertx(false, 10);
-		System.setProperty("uploadDir", "/webserver/other/file-uploads");
+		System.setProperty("uploadDir", "/Users/menfre/Workbench/deploy/file-uploads");
+		System.setProperty("supervisorHost", "http://localhost:9001");
 		WebModule.builder()
-			.webRoot("/webserver/other/")
-			.port(83)
+			.webRoot("/Users/menfre/Workbench/deploy/html")
+			.port(8080)
 			.build()
 			.run(vertx, "org.mendora.route");
 	}
