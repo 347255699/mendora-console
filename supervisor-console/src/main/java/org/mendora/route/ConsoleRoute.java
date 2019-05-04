@@ -151,6 +151,7 @@ public class ConsoleRoute implements RouteFactory {
         processInfo.setState(ProcessInfo.State.valOf(tdEle.child(0).child(0).text()).state);
         processInfo.setDescription(tdEle.child(1).child(0).text());
         processInfo.setName(tdEle.child(2).child(0).text());
+        processInfo.setLoading(false);
         return processInfo;
     }
 

@@ -10,6 +10,8 @@ public class ProcessInfo {
 
     private String name;
 
+    private boolean loading;
+
     public enum State{
         STOPPED (0, "stopped"),
         STARTING(10, "starting"),
